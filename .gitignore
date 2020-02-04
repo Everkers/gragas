@@ -43,3 +43,5 @@ web/css
 # Sharding testing
 .env
 sharding.yml
+DockerFile
+commands.txt

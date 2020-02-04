@@ -1,0 +1,25 @@
+{
+	"commands": [
+		{
+			"name": "add"
+		},
+		{
+			"name": "delete"
+		},
+		{
+			"name": "edit"
+		},
+		{
+			"name": "deleteAll"
+		},
+		{
+			"name": "show"
+		},
+		{
+			"name": "showAll"
+		},
+		{
+			"name": "done"
+		}
+	]
+}

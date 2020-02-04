@@ -4,8 +4,10 @@
 	"description": "",
 	"main": "dist/app",
 	"scripts": {
-		"start": "tsc && node dist/app",
-		"build": "tsc"
+		"start": "tsc && node dist/src/app",
+		"build": "tsc",
+		"watch": "tsc --watch",
+		"dev": "npm run build && nodemon dist/src/app"
 	},
 	"keywords": [],
 	"author": "",
@@ -17,5 +19,10 @@
 		"nodemon": "^2.0.2",
 		"typescript": "^3.7.5"
 	},
-	"dependencies": {}
+	"dependencies": {
+		"@types/node": "^13.7.0",
+		"discord.js": "^11.5.1",
+		"dotenv": "^8.2.0",
+		"pg": "^7.18.1"
+	}
 }
