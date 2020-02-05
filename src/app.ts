@@ -1,6 +1,6 @@
 import { config } from 'dotenv'
 config()
-import { Client } from 'discord.js'
+import { Client, RichEmbed } from 'discord.js'
 import Extractor from './services/extractor'
 import Commands from './services/commands'
 const extractor = new Extractor()
@@ -12,15 +12,17 @@ client.on('message', async msg => {
 	try {
 		if (extractor.hasPrefix(msg.content)) {
 			const command = extractor.getCommand(msg.content)
-			if (command) {
-				const commands = new Commands(msg.author.id)
-				let c: string
-				let secondCommand: string
-				if (command[1] != undefined) {
-					c = command.shift()
-					secondCommand = command.join(' ')
-				}
-				const { data, reminder, task } = await commands[c](secondCommand)
+			const commands = new Commands(msg.author.id)
+			let secondCommand: string
+			let c: string
+			if (command[1] != undefined) {
+				c = command.shift()
+				secondCommand = command.join(' ')
+			} else {
+				c = command[0]
+			}
+			if (c == 'add') {
+				const { data, reminder, task } = await commands.add(secondCommand)
 				if (reminder) {
 					setTimeout(() => {
 						msg.author.sendMessage(
@@ -29,6 +31,25 @@ client.on('message', async msg => {
 					}, reminder)
 				}
 				msg.reply(data)
+			} else if (c == 'showAll') {
+				const data = await commands.showAll()
+				const embed = new RichEmbed()
+					.setTitle(`Todos for ${msg.author.username}`)
+					.setColor('#e67e22')
+					.addField(
+						'Todos',
+						`${data
+							.map(
+								task =>
+									`[${task.id}] : ${task.task} ${
+										task.done
+											? ':white_check_mark:'
+											: ':negative_squared_cross_mark:'
+									}\n \n`
+							)
+							.join('')}`
+					)
+				msg.channel.send(embed)
 			}
 		}
 	} catch (err) {
