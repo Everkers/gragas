@@ -6,14 +6,14 @@ export default class Extractor {
 		this.prefix = data.bot.prefix
 	}
 
-	hasPrefix(command: string) {
+	public hasPrefix(command: string) {
 		if (command.startsWith(this.prefix)) {
 			return true
 		}
 		return false
 	}
 
-	extractCommand(command: string) {
+	public extractCommand(command: string) {
 		const content = command
 			.split(this.prefix)
 			.pop()
@@ -21,7 +21,7 @@ export default class Extractor {
 		return content
 	}
 
-	getCommand(text: string) {
+	public getCommand(text: string) {
 		const { commands } = dataCommands
 		const commandData = this.extractCommand(text)
 		let validCommand: string[]

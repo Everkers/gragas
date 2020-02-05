@@ -20,8 +20,15 @@ client.on('message', async msg => {
 					c = command.shift()
 					secondCommand = command.join(' ')
 				}
-				const commandResult = await commands[c](secondCommand)
-				msg.reply(commandResult)
+				const { data, reminder, task } = await commands[c](secondCommand)
+				if (reminder) {
+					setTimeout(() => {
+						msg.author.sendMessage(
+							`Hello ${msg.author}, this is a reminder for : \`${task}\``
+						)
+					}, reminder)
+				}
+				msg.reply(data)
 			}
 		}
 	} catch (err) {
