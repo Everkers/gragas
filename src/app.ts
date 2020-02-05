@@ -38,16 +38,20 @@ client.on('message', async msg => {
 					.setColor('#e67e22')
 					.addField(
 						'Todos',
-						`${data
-							.map(
-								task =>
-									`[${task.id}] : ${task.task} ${
-										task.done
-											? ':white_check_mark:'
-											: ':negative_squared_cross_mark:'
-									}\n \n`
-							)
-							.join('')}`
+						`${
+							data.length
+								? data
+										.map(
+											task =>
+												`[${task.id}] : ${task.task}     ${
+													task.done
+														? ':white_check_mark:'
+														: ':negative_squared_cross_mark:'
+												}\n \n`
+										)
+										.join('')
+								: `You don't have any todos`
+						}`
 					)
 				msg.channel.send(embed)
 			}

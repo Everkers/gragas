@@ -14,7 +14,7 @@ export default class Commands {
 
 	public async showAll() {
 		try {
-			const data = await new Promise((resolve, reject) => {
+			const data: any = await new Promise((resolve, reject) => {
 				pool.query(
 					`SELECT * FROM todos WHERE userid = '${this.userId}'`,
 					(err, res) => {
