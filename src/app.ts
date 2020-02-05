@@ -11,22 +11,6 @@ client.on('ready', () => {
 })
 client.on('message', async msg => {
 	try {
-		if (msg.content == 'setup_db') {
-			msg.reply('start setuping db ')
-			const connectionString = process.env.DATABASE_URL
-			const pool = new Pool({
-				connectionString,
-			})
-			const query = `CREATE TABLE todos (
-				id bigseria NOT NULL PRIMARY KEY,
-				task TEXT NOT NULL,
-				userid TEXT NOT NULL,
-				done BOOLEAN NOT NULL DEFAULT FALSE,
-			)`
-			pool.query(query, (err, res) => {
-				msg.channel.send(`` + res + ``)
-			})
-		}
 		if (extractor.hasPrefix(msg.content)) {
 			const command = extractor.getCommand(msg.content)
 			const commands = new Commands(msg.author.id)
