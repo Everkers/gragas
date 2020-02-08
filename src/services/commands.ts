@@ -33,12 +33,13 @@ export default class Commands {
 			this.selectById(id)
 			const data: any = await new Promise((resolve, reject) => {
 				pool.query(
-					`DELETE FROM todos WHERE id = ${id} AND userid = '${this.userId}'`,
+					`DELETE FROM todos WHERE taskid = ${id} AND userid = '${this.userId}'`,
 					(err, res) => {
-						if (res && res.rowCount == 1) {
-							resolve('Your task has been deleted')
-						} else if (res.rowCount == 0) {
+						if (res.rowCount == 0) {
 							resolve(`There is no task with id of ${id}`)
+						}
+						if (res && !err) {
+							resolve('Your task has been deleted')
 						} else {
 							resolve(
 								'An error occurred while trying to delete your task from the database'
@@ -59,12 +60,35 @@ export default class Commands {
 				pool.query(
 					`SELECT * FROM todos WHERE userid = '${this.userId}'`,
 					(err, res) => {
-						if (res && res.command == 'SELECT') {
+						if (res && !err) {
 							resolve(res.rows)
 						} else {
 							resolve(
 								'An error occurred while trying to retrieve the data from the database'
 							)
+						}
+					}
+				)
+			})
+			return data
+		} catch (err) {
+			console.log(err)
+		}
+	}
+
+	private async getCurrentId() {
+		try {
+			const data: any = await new Promise((resolve, rejects) => {
+				pool.query(
+					`SELECT taskid FROM todos WHERE userid='${this.userId}'`,
+					(err, res) => {
+						if (res && !err && res.rowCount >= 1) {
+							const { taskid } = res.rows.pop()
+							resolve(taskid)
+						} else if (res && res.rowCount == 0) {
+							resolve(0)
+						} else {
+							resolve('An error occurred while trying to get last task id')
 						}
 					}
 				)
@@ -87,12 +111,13 @@ export default class Commands {
 				rem = time + timemeasure
 				reminder = helpers.getTime(+time, timemeasure)
 			}
-			const data: any = await new Promise((resolve, reject) => {
+			const data: any = await new Promise(async (resolve, reject) => {
+				const currentId = await this.getCurrentId()
 				pool.query(
-					`INSERT INTO todos ( task , userid) VALUES
-                     ('${task}' ,'${this.userId}')`,
+					`INSERT INTO todos ( taskid, task , userid) VALUES
+                     (${currentId + 1} , '${task}' ,'${this.userId}')`,
 					(err, res) => {
-						if (res && res.rowCount == 1) {
+						if (res && !err) {
 							resolve({
 								data: reminder
 									? `Your task has been added i will reminde you after ${rem}`

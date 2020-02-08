@@ -44,7 +44,7 @@ client.on('message', async msg => {
 								? data
 										.map(
 											task =>
-												`[${task.id}] : ${task.task}     ${
+												`[${task.taskid}] : ${task.task}     ${
 													task.done
 														? ':white_check_mark:'
 														: ':negative_squared_cross_mark:'
