@@ -35,7 +35,7 @@ export default class Commands {
 		}
 	}
 
-	public async delete(id) {
+	public async delete(id: number) {
 		try {
 			const data: any = await new Promise((resolve, reject) => {
 				pool.query(
@@ -93,6 +93,28 @@ export default class Commands {
 							resolve(taskid)
 						} else if (res && res.rowCount == 0) {
 							resolve(0)
+						} else {
+							resolve('An error occurred while trying to get last task id')
+						}
+					}
+				)
+			})
+			return data
+		} catch (err) {
+			console.log(err)
+		}
+	}
+
+	public async done(id: number) {
+		try {
+			const data: any = await new Promise((resolve, rejects) => {
+				pool.query(
+					`UPDATE todos SET done = true WHERE userid ='${this.userId}' AND taskId = ${id}`,
+					(err, res) => {
+						if (res && !err && res.rowCount >= 1) {
+							resolve('Your task has been set to done.')
+						} else if (res && res.rowCount == 0) {
+							resolve(`There is no undone task with id of ${id}`)
 						} else {
 							resolve('An error occurred while trying to get last task id')
 						}

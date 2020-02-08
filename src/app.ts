@@ -58,11 +58,18 @@ client.on('message', async msg => {
 			} else if (c == 'deleteAll') {
 				const data = await commands.deleteAll()
 				msg.reply(data)
+			} else if (c == 'done') {
+				if (secondCommand == undefined) {
+					msg.reply('please add the task number')
+				} else {
+					const data = await commands.done(+secondCommand)
+					msg.reply(data)
+				}
 			} else if (c == 'delete') {
 				if (secondCommand == undefined) {
 					msg.reply('please add the task number')
 				} else {
-					const data = await commands.delete(secondCommand)
+					const data = await commands.delete(+secondCommand)
 					msg.reply(data)
 				}
 			}
