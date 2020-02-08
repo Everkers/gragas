@@ -1,6 +1,7 @@
 import { Pool } from 'pg'
 import Helpers from './helpers'
 import { resolve } from 'dns'
+import { rejects } from 'assert'
 const helpers = new Helpers()
 const connectionString = process.env.DATABASE_URL
 const pool = new Pool({
@@ -12,6 +13,46 @@ export default class Commands {
 		this.userId = userId
 	}
 
+	private async selectById(id) {
+		try {
+			const data: any = await new Promise((resolve, rejects) => {
+				pool.query(
+					`SELECT * FROM todos WHERE id = ${id} AND userid = '${this.userId}'`,
+					(err, res) => {
+						// console.log(res)
+					}
+				)
+			})
+		} catch (err) {
+			console.log(err)
+		}
+	}
+
+	public async delete(id) {
+		try {
+			this.selectById(id)
+			const data: any = await new Promise((resolve, reject) => {
+				pool.query(
+					`DELETE FROM todos WHERE id = ${id} AND userid = '${this.userId}'`,
+					(err, res) => {
+						if (res && res.rowCount == 1) {
+							resolve('Your task has been deleted')
+						} else if (res.rowCount == 0) {
+							resolve(`There is no task with id of ${id}`)
+						} else {
+							resolve(
+								'An error occurred while trying to delete your task from the database'
+							)
+						}
+					}
+				)
+			})
+			return data
+		} catch (err) {
+			console.log(err)
+		}
+	}
+
 	public async showAll() {
 		try {
 			const data: any = await new Promise((resolve, reject) => {
@@ -20,6 +61,10 @@ export default class Commands {
 					(err, res) => {
 						if (res && res.command == 'SELECT') {
 							resolve(res.rows)
+						} else {
+							resolve(
+								'An error occurred while trying to retrieve the data from the database'
+							)
 						}
 					}
 				)
@@ -47,7 +92,7 @@ export default class Commands {
 					`INSERT INTO todos ( task , userid) VALUES
                      ('${task}' ,'${this.userId}')`,
 					(err, res) => {
-						if (res && res.command == 'INSERT') {
+						if (res && res.rowCount == 1) {
 							resolve({
 								data: reminder
 									? `Your task has been added i will reminde you after ${rem}`

@@ -71,6 +71,13 @@ client.on('message', async msg => {
 						}`
 					)
 				msg.channel.send(embed)
+			} else if (c == 'delete') {
+				if (secondCommand == undefined) {
+					msg.reply('please add the task number')
+				} else {
+					const data = await commands.delete(secondCommand)
+					msg.reply(data)
+				}
 			}
 		}
 	} catch (err) {
