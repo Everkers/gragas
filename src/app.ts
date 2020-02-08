@@ -55,6 +55,9 @@ client.on('message', async msg => {
 						}`
 					)
 				msg.channel.send(embed)
+			} else if (c == 'deleteAll') {
+				const data = await commands.deleteAll()
+				msg.reply(data)
 			} else if (c == 'delete') {
 				if (secondCommand == undefined) {
 					msg.reply('please add the task number')

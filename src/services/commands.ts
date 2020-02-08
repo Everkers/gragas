@@ -13,16 +13,23 @@ export default class Commands {
 		this.userId = userId
 	}
 
-	private async selectById(id) {
+	public async deleteAll() {
 		try {
-			const data: any = await new Promise((resolve, rejects) => {
+			const data: any = await new Promise((resolve, reject) => {
 				pool.query(
-					`SELECT * FROM todos WHERE id = ${id} AND userid = '${this.userId}'`,
+					`DELETE FROM todos WHERE userid = '${this.userId}'`,
 					(err, res) => {
-						// console.log(res)
+						if (res && !err) {
+							resolve('Your tasks has been deleted')
+						} else {
+							resolve(
+								'An error occurred while trying to delete your task from the database'
+							)
+						}
 					}
 				)
 			})
+			return data
 		} catch (err) {
 			console.log(err)
 		}
@@ -30,7 +37,6 @@ export default class Commands {
 
 	public async delete(id) {
 		try {
-			this.selectById(id)
 			const data: any = await new Promise((resolve, reject) => {
 				pool.query(
 					`DELETE FROM todos WHERE taskid = ${id} AND userid = '${this.userId}'`,
@@ -120,7 +126,7 @@ export default class Commands {
 						if (res && !err) {
 							resolve({
 								data: reminder
-									? `Your task has been added i will reminde you after ${rem}`
+									? `Your task has been added, i will reminde you after ${rem}`
 									: 'Your task has been added ',
 								reminder,
 								task,
