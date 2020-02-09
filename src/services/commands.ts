@@ -140,26 +140,33 @@ export default class Commands {
 				reminder = helpers.getTime(+time, timemeasure)
 			}
 			const data: any = await new Promise(async (resolve, reject) => {
-				const currentId = await this.getCurrentId()
-				pool.query(
-					`INSERT INTO todos ( taskid, task , userid) VALUES
-                     (${currentId + 1} , '${task}' ,'${this.userId}')`,
-					(err, res) => {
-						if (res && !err) {
-							resolve({
-								data: reminder
-									? `Your task has been added, i will reminde you after ${rem}`
-									: 'Your task has been added ',
-								reminder,
-								task,
-							})
-						} else {
-							resolve(
-								'An error occurred while trying to add your task to the database'
-							)
+				if (reminder && rem.match(/(?:m|d|s|h)/)) {
+					const currentId = await this.getCurrentId()
+					pool.query(
+						`INSERT INTO todos ( taskid, task , userid) VALUES
+						 (${currentId + 1} , '${task}' ,'${this.userId}')`,
+						(err, res) => {
+							if (res && !err) {
+								resolve({
+									data: reminder
+										? `Your task has been added, i will reminde you after ${rem}`
+										: 'Your task has been added ',
+									reminder,
+									task,
+								})
+							} else {
+								resolve(
+									'An error occurred while trying to add your task to the database'
+								)
+							}
 						}
-					}
-				)
+					)
+				} else {
+					resolve({
+						data: `Unsupported time measure of **${rem}**,
+						 use \`~help\` to learn more about reminders.`,
+					})
+				}
 			})
 
 			return data
