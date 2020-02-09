@@ -72,6 +72,22 @@ client.on('message', async msg => {
 					const data = await commands.delete(+secondCommand)
 					msg.reply(data)
 				}
+			} else if (c == 'help') {
+				const messageEmbed = new RichEmbed()
+					.setTitle('Gragas Commands')
+					.addField(
+						'~add <your task here> <optional reminder> \n e.g: ~add read a book (20m)',
+						'add a task'
+					)
+					.addField('~showAll', 'show all your tasks')
+					.addField('~deleteAll', 'delete all your tasks with one command')
+					.addField('~delete <task id>', 'delete a specific task with id')
+					.addField('~done <task id>', 'set a task to done with id')
+					.addField(
+						'supported time measures',
+						'm : minutes , h : hours , s : seconds , d : days'
+					)
+				msg.channel.send(messageEmbed)
 			}
 		}
 	} catch (err) {
