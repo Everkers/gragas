@@ -148,11 +148,26 @@ export default class Commands {
 						(err, res) => {
 							if (res && !err) {
 								resolve({
-									data: reminder
-										? `Your task has been added, i will reminde you after ${rem}`
-										: 'Your task has been added ',
+									data: `Your task has been added, i will reminde you after ${rem}`,
 									reminder,
 									task,
+								})
+							} else {
+								resolve(
+									'An error occurred while trying to add your task to the database'
+								)
+							}
+						}
+					)
+				} else if (!reminder) {
+					const currentId = await this.getCurrentId()
+					pool.query(
+						`INSERT INTO todos ( taskid, task , userid) VALUES
+						 (${currentId + 1} , '${task}' ,'${this.userId}')`,
+						(err, res) => {
+							if (res && !err) {
+								resolve({
+									data: 'Your task has been added ',
 								})
 							} else {
 								resolve(
