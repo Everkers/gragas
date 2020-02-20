@@ -88,6 +88,22 @@ client.on('message', async msg => {
 						'm : minutes , h : hours , s : seconds , d : days'
 					)
 				msg.channel.send(messageEmbed)
+			} else if (c == 'showDone') {
+				const data = await commands.showDone()
+				const embed = new RichEmbed()
+					.setTitle(`Completed tasks for ${msg.author.username}`)
+					.setColor('#e67e22')
+					.addField(
+						'Done tasks',
+						`${
+							data
+								? data
+										.map((task, index) => `[${task.taskid}] : ${task.task}`)
+										.join('')
+								: 'there is no completed tasks'
+						}`
+					)
+				msg.channel.send(embed)
 			}
 		}
 	} catch (err) {

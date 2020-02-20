@@ -127,6 +127,26 @@ export default class Commands {
 		}
 	}
 
+	public async showDone() {
+		try {
+			const data: any = await new Promise((resolve, reject) => {
+				pool.query(
+					`SELECT * FROM todos WHERE userid ='${this.userId}' AND done = true`,
+					(err, res) => {
+						if (res.rowCount == 0) {
+							resolve(undefined)
+						} else if (res && !err) {
+							resolve(res.rows)
+						}
+					}
+				)
+			})
+			return data
+		} catch (err) {
+			console.log(err)
+		}
+	}
+
 	public async add(task: string) {
 		let reminder: number
 		let rem: string
