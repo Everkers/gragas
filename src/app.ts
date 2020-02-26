@@ -7,6 +7,11 @@ import { Pool } from 'pg'
 const extractor = new Extractor()
 const client = new Client()
 client.on('ready', () => {
+	client.user.setPresence({
+		game: {
+			name: '~help',
+		},
+	})
 	console.log('Ready to go!')
 })
 client.on('message', async msg => {
