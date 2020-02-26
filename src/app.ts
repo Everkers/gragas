@@ -83,6 +83,7 @@ client.on('message', async msg => {
 					.addField('~deleteAll', 'delete all your tasks with one command')
 					.addField('~delete <task id>', 'delete a specific task with id')
 					.addField('~done <task id>', 'set a task to done with id')
+					.addField('~showDone', 'show all completed tasks')
 					.addField(
 						'supported time measures',
 						'm : minutes , h : hours , s : seconds , d : days'

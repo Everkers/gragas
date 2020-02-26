@@ -23,6 +23,9 @@
 		},
 		{
 			"name": "help"
+		},
+		{
+			"name": "showDone"
 		}
 	]
 }
