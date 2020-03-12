@@ -35,24 +35,26 @@ export default class Commands {
 		}
 	}
 
-	public async delete(id: number) {
+	public async delete(ids) {
 		try {
 			const data: any = await new Promise((resolve, reject) => {
-				pool.query(
-					`DELETE FROM todos WHERE taskid = ${id} AND userid = '${this.userId}'`,
-					(err, res) => {
-						if (res.rowCount == 0) {
-							resolve(`There is no task with id of ${id}`)
+				ids.forEach(id => {
+					pool.query(
+						`DELETE FROM todos WHERE taskid = ${id} AND userid = '${this.userId}'`,
+						(err, res) => {
+							if (res.rowCount == 0) {
+								resolve(`There is no task with id of ${id}`)
+							}
+							if (res && !err) {
+								resolve('Your task has been deleted')
+							} else {
+								resolve(
+									'An error occurred while trying to delete your task from the database'
+								)
+							}
 						}
-						if (res && !err) {
-							resolve('Your task has been deleted')
-						} else {
-							resolve(
-								'An error occurred while trying to delete your task from the database'
-							)
-						}
-					}
-				)
+					)
+				})
 			})
 			return data
 		} catch (err) {
@@ -105,21 +107,23 @@ export default class Commands {
 		}
 	}
 
-	public async done(id: number) {
+	public async done(ids) {
 		try {
 			const data: any = await new Promise((resolve, rejects) => {
-				pool.query(
-					`UPDATE todos SET done = true WHERE userid ='${this.userId}' AND taskId = ${id}`,
-					(err, res) => {
-						if (res && !err && res.rowCount >= 1) {
-							resolve('Your task has been set to done.')
-						} else if (res && res.rowCount == 0) {
-							resolve(`There is no undone task with id of ${id}`)
-						} else {
-							resolve('An error occurred while trying to get last task id')
+				ids.forEach(id => {
+					pool.query(
+						`UPDATE todos SET done = true WHERE userid ='${this.userId}' AND taskId = ${id}`,
+						(err, res) => {
+							if (res && !err && res.rowCount >= 1) {
+								resolve('Your task has been set to done.')
+							} else if (res && res.rowCount == 0) {
+								resolve(`There is no undone task with id of ${id}`)
+							} else {
+								resolve('An error occurred while trying to get last task id')
+							}
 						}
-					}
-				)
+					)
+				})
 			})
 			return data
 		} catch (err) {

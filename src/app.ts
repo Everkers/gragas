@@ -67,14 +67,16 @@ client.on('message', async msg => {
 				if (secondCommand == undefined) {
 					msg.reply('please add the task number')
 				} else {
-					const data = await commands.done(+secondCommand)
+					const numbers = secondCommand.split(' ').map(num => parseInt(num, 10))
+					const data = await commands.done(numbers)
 					msg.reply(data)
 				}
 			} else if (c == 'delete') {
 				if (secondCommand == undefined) {
 					msg.reply('please add the task number')
 				} else {
-					const data = await commands.delete(+secondCommand)
+					const numbers = secondCommand.split(' ').map(num => parseInt(num, 10))
+					const data = await commands.delete(numbers)
 					msg.reply(data)
 				}
 			} else if (c == 'help') {
@@ -93,6 +95,7 @@ client.on('message', async msg => {
 						'supported time measures',
 						'm : minutes , h : hours , s : seconds , d : days'
 					)
+					.addField('multiple select', 'e.g: ~delete 1 2 4 6')
 				msg.channel.send(messageEmbed)
 			} else if (c == 'showDone') {
 				const data = await commands.showDone()
