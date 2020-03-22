@@ -1,7 +1,10 @@
+/* eslint-disable max-len */
 import { config } from 'dotenv'
 config()
 import { Client, RichEmbed } from 'discord.js'
 import Extractor from './services/extractor'
+import Helpers from './services/helpers'
+const helpers = new Helpers()
 import Commands from './services/commands'
 import { Pool } from 'pg'
 const extractor = new Extractor()
@@ -91,6 +94,7 @@ client.on('message', async msg => {
 					.addField('~delete <task id>', 'delete a specific task with id')
 					.addField('~done <task id>', 'set a task to done with id')
 					.addField('~showDone', 'show all completed tasks')
+					.addField('~team-reminder <role> , <task> , <reminder>', 'reminder the a role members of specific task ')
 					.addField(
 						'supported time measures',
 						'm : minutes , h : hours , s : seconds , d : days'
@@ -113,6 +117,50 @@ client.on('message', async msg => {
 						}`
 					)
 				msg.channel.send(embed)
+			}
+			else if(c == 'team-reminder'){
+				if(secondCommand){
+					let [role , task , reminder] = secondCommand.split(',')
+					if(!reminder || !task){
+						msg.reply('Please double check your inputs, something is missing ')
+					}
+					else if ( role && reminder && task ){
+						const r = role.split(' ').filter(item => item)
+						r.forEach(rl =>{
+						const roleEdited = rl.replace(/[<>@&]/g , '')
+						let validRole =null
+						msg.guild.roles.forEach(role =>{
+							if(roleEdited.match(role.id)){
+								validRole = role
+							}
+						})
+						if(validRole && reminder){
+								const timemeasure = reminder.match(/[a-zA-Z]+/g)[0]
+								const time = reminder.match(/[0-9]+/g)[0]
+								const reminderNum = helpers.getTime(+time, timemeasure)
+								 msg.channel.send(`I'll reminde all the members with the role of <@&${validRole.id}> to \`${task}\` after ${reminder}`)
+								 const members = validRole.members.map(m => m)
+								 setTimeout(()=>{
+									 msg.channel.send(`Yo What's up <@&${validRole.id}>, this is a reminder for \`${task}\`, don't be lazy and go achieve the f* task!`)
+									members.forEach(member=>{
+										if(!member.user.bot){
+											client.fetchUser(member.user.id , false).then(user =>{
+												user.sendMessage(`Hey ${user.username} i hope you are doing well, this is a team-reminder for \`${task}\``)
+											})
+										}
+									})
+								 } , reminderNum)
+						}
+						else if (!validRole){
+							msg.reply('Please add a valid role and try again!')
+						}
+						})
+									
+					}
+				}
+				else{
+					msg.reply('Please add a role,reminder and a task')
+				}
 			}
 		}
 	} catch (err) {

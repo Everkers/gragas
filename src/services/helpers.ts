@@ -1,6 +1,5 @@
 export default class Helpers {
 	constructor() {}
-
 	public getTime(time: number, timemeasure: string) {
 		let returntime: number = time
 		switch (timemeasure) {
